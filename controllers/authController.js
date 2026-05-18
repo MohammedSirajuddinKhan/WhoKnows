@@ -13,9 +13,10 @@ function renderAuthPage(res, view, options = {}) {
 }
 
 exports.getLogin = (req, res) => {
-  const flashMessages = req.query.loggedOut === "1"
-    ? { success: ["Logged out successfully."] }
-    : undefined;
+  const flashMessages =
+    req.query.loggedOut === "1"
+      ? { success: ["Logged out successfully."] }
+      : undefined;
 
   return renderAuthPage(res, "auth/login", {
     title: "Login",

@@ -21,7 +21,9 @@ function validateChatAccess(currentUser, otherUser) {
 }
 
 async function getOrCreateChat(userId, otherUserId) {
-  let chat = await Chat.findOne({ participants: { $all: [userId, otherUserId] } });
+  let chat = await Chat.findOne({
+    participants: { $all: [userId, otherUserId] },
+  });
   if (!chat) {
     chat = await Chat.create({ participants: [userId, otherUserId] });
   }

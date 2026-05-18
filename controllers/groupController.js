@@ -175,7 +175,9 @@ exports.inviteUsers = async (req, res, next) => {
       return res.redirect("back");
     }
 
-    const rawTargets = String(req.body.userIdentifiers || req.body.userIds || "")
+    const rawTargets = String(
+      req.body.userIdentifiers || req.body.userIds || "",
+    )
       .split(",")
       .map((value) => value.trim())
       .filter(Boolean);
@@ -185,7 +187,8 @@ exports.inviteUsers = async (req, res, next) => {
       const byId = /^[a-fA-F0-9]{24}$/.test(target)
         ? await User.findById(target)
         : null;
-      const user = byId || await User.findOne({ username: target.toLowerCase() });
+      const user =
+        byId || (await User.findOne({ username: target.toLowerCase() }));
       if (user && String(user._id) !== String(req.user._id)) {
         targetUsers.push(user);
       }
