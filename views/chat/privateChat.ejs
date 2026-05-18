@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel chat-panel">
+      <header class="chat-header">
+        <div>
+          <p class="eyebrow">Private chat</p>
+          <h1>@<%= otherUser.username %></h1>
+          <p><%= otherUser.bio || 'Accepted friend conversation' %></p>
+          <p class="typing-status" data-typing-status></p>
+        </div>
+        <div class="status-pill <%= otherUser.isOnline ? 'is-online' : 'is-offline' %>"><%= otherUser.isOnline ? 'Online' : 'Offline' %></div>
+      </header>
+
+      <section class="messages-panel" data-chat-room data-chat-id="<%= chat._id %>" data-other-user-id="<%= otherUser._id %>">
+        <div class="message-stream" data-message-stream>
+          <% messages.forEach(function(message) { %>
+            <article class="message-bubble <%= String(message.sender._id) === String(currentUser._id) ? 'is-me' : 'is-them' %>" data-message-id="<%= message._id %>">
+              <p><%= message.content %></p>
+              <small>
+                <%= formatDate(message.createdAt) %>
+                <% if (message.status) { %> · <%= message.status %><% } %>
+              </small>
+              <% if (String(message.sender._id) === String(currentUser._id)) { %>
+                <form action="/chat/messages/<%= message._id %>/delete" method="POST" class="message-actions">
+                  <button type="submit">Delete</button>
+                </form>
+              <% } %>
+            </article>
+          <% }); %>
+        </div>
+
+        <form class="chat-compose" data-private-chat-form action="/chat/private/<%= otherUser._id %>/messages" method="POST">
+          <input type="text" name="content" placeholder="Write a message..." autocomplete="off" required>
+          <button class="primary-button" type="submit">Send</button>
+        </form>
+      </section>
+    </section>
+  </main>
+  <script>
+    window.chatContext = {
+      chatId: '<%= chat._id %>',
+      otherUserId: '<%= otherUser._id %>',
+      currentUserId: '<%= currentUser._id %>',
+      mode: 'private'
+    };
+  </script>
+  <%- include('../partials/footer') %>
+</body>
+</html>

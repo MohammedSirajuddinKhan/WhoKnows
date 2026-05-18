@@ -1,0 +1,120 @@
+.chat-panel {
+  min-height: calc(100vh - 10rem);
+}
+
+.chat-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.messages-panel {
+  display: grid;
+  gap: 1rem;
+  min-height: 60vh;
+  padding: 1.1rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.01)
+  );
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.message-stream {
+  display: grid;
+  gap: 0.8rem;
+  align-content: start;
+}
+
+.message-bubble {
+  max-width: min(72ch, 82%);
+  padding: 0.85rem 0.95rem;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.message-bubble.is-me {
+  margin-left: auto;
+  background: linear-gradient(
+    135deg,
+    rgba(77, 182, 255, 0.22),
+    rgba(31, 143, 229, 0.18)
+  );
+}
+
+.message-bubble.is-them {
+  margin-right: auto;
+}
+
+.message-bubble small {
+  color: var(--muted);
+}
+
+.message-actions {
+  margin-top: 0.65rem;
+}
+
+.message-actions button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 0;
+}
+
+.chat-compose {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  position: sticky;
+  bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(6, 12, 19, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.chat-compose input {
+  border: 0;
+  background: transparent;
+}
+
+.typing-status {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.reply-box {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 760px) {
+  .chat-header,
+  .chat-compose {
+    border-radius: 18px;
+  }
+
+  .message-bubble {
+    max-width: 100%;
+  }
+
+  .chat-compose {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 18px;
+  }
+}

@@ -1,0 +1,33 @@
+.auth-page .topbar {
+  position: sticky;
+}
+
+.auth-shell {
+  min-height: calc(100vh - 8rem);
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.2rem 3rem;
+}
+
+.auth-card {
+  width: min(560px, 100%);
+  padding: 1.4rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.auth-links a {
+  color: var(--accent);
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Discovery</p>
+          <h1>Search users</h1>
+        </div>
+      </div>
+
+      <section class="surface-card">
+        <form class="search-page-form" action="/users/search" method="GET">
+          <input type="search" name="q" data-user-search value="<%= query %>" placeholder="Search by username">
+          <button class="primary-button" type="submit">Search</button>
+        </form>
+        <div class="stack-list" data-search-results>
+          <% if (results.length) { %>
+            <% results.forEach(function(user) { %>
+              <article class="list-item user-card">
+                <div>
+                  <strong>@<%= user.username %></strong>
+                  <p><%= user.bio || 'No bio yet.' %></p>
+                </div>
+                <div class="inline-actions">
+                  <a class="secondary-button" href="/chat/private/<%= user._id %>">Chat</a>
+                  <form action="/users/requests/friend/<%= user._id %>" method="POST" class="inline-form">
+                    <button class="secondary-button" type="submit">Add friend</button>
+                  </form>
+                </div>
+              </article>
+            <% }); %>
+          <% } else if (query) { %>
+            <p class="muted-text">No users matched your search.</p>
+          <% } else { %>
+            <p class="muted-text">Search for someone by username to start a request or private chat.</p>
+          <% } %>
+        </div>
+      </section>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

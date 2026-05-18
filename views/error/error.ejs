@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="auth-page">
+  <%- include('../partials/navbar') %>
+  <main class="auth-shell">
+    <section class="auth-card">
+      <p class="eyebrow">Error</p>
+      <h1>Something went wrong</h1>
+      <p><%= message || 'Please try again in a moment.' %></p>
+      <% if (error && error.stack) { %>
+        <pre class="error-stack"><%= error.stack %></pre>
+      <% } %>
+      <a class="primary-button" href="<%= currentUser ? '/users/dashboard' : '/auth/login' %>">Return</a>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

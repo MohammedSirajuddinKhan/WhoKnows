@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h1>Dashboard</h1>
+        </div>
+        <a class="primary-button" href="/users/profile">Edit profile</a>
+      </div>
+      <div class="grid-cards">
+        <article class="metric-card"><span>Pending requests</span><strong><%= stats.pendingRequests %></strong></article>
+        <article class="metric-card"><span>Private chats</span><strong><%= stats.chats %></strong></article>
+        <article class="metric-card"><span>Groups</span><strong><%= stats.groups %></strong></article>
+        <article class="metric-card"><span>Unread notifications</span><strong><%= stats.unreadNotifications %></strong></article>
+      </div>
+
+      <div class="two-column">
+        <section class="surface-card">
+          <div class="surface-card__head"><h2>Recent chats</h2><a href="/chat/inbox">Open inbox</a></div>
+          <div class="stack-list">
+            <% if (recentChats.length) { %>
+              <% recentChats.forEach(function(chat) { 
+                const other = chat.participants.find((participant) => String(participant._id) !== String(currentUser._id)); %>
+                <a class="list-item" href="/chat/private/<%= other._id %>">
+                  <div>
+                    <strong><%= other.username %></strong>
+                    <p><%= chat.lastMessage || 'No messages yet' %></p>
+                  </div>
+                  <small><%= formatDate(chat.lastMessageAt) %></small>
+                </a>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No chats yet. Start from the search page.</p>
+            <% } %>
+          </div>
+        </section>
+        <section class="surface-card">
+          <div class="surface-card__head"><h2>Groups</h2><a href="/groups">View all</a></div>
+          <div class="stack-list">
+            <% if (groups.length) { %>
+              <% groups.forEach(function(group) { %>
+                <a class="list-item" href="/groups/<%= group._id %>">
+                  <div>
+                    <strong><%= group.name %></strong>
+                    <p><%= group.description || 'Group conversation' %></p>
+                  </div>
+                  <small><%= formatDate(group.lastMessageAt) %></small>
+                </a>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No groups yet. Create one to start a conversation.</p>
+            <% } %>
+          </div>
+        </section>
+      </div>
+
+      <section class="surface-card">
+        <div class="surface-card__head"><h2>Notifications</h2><a href="/notifications">See all</a></div>
+        <div class="stack-list">
+          <% if (notifications.length) { %>
+            <% notifications.forEach(function(notification) { %>
+              <a class="list-item" href="<%= notification.link %>">
+                <div>
+                  <strong><%= notification.title %></strong>
+                  <p><%= notification.message %></p>
+                </div>
+                <small><%= formatDate(notification.createdAt) %></small>
+              </a>
+            <% }); %>
+          <% } else { %>
+            <p class="muted-text">No notifications yet.</p>
+          <% } %>
+        </div>
+      </section>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

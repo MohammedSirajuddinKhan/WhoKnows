@@ -1,0 +1,56 @@
+<header class="topbar">
+  <a class="brand" href="<%= currentUser ? '/users/dashboard' : '/auth/login' %>">
+    <span class="brand-mark">WK</span>
+    <span>
+      <strong><%= appName %></strong>
+      <small>private + anonymous</small>
+    </span>
+  </a>
+
+  <div class="topbar-search">
+    <% if (currentUser) { %>
+      <form action="/users/search" method="GET" class="search-form">
+        <input type="search" name="q" placeholder="Search users" value="<%= typeof query !== 'undefined' ? query : '' %>">
+      </form>
+    <% } else { %>
+      <span class="muted-pill">Anonymous messaging meets realtime chat</span>
+    <% } %>
+  </div>
+
+  <div class="topbar-actions">
+    <% if (currentUser) { %>
+      <button class="icon-button" type="button" data-notification-toggle aria-label="Notifications">
+        <span>Notifications</span>
+        <span class="badge" id="notification-badge">0</span>
+      </button>
+      <div class="notification-dropdown" data-notification-dropdown>
+        <div class="notification-dropdown__header">
+          <strong>Notifications</strong>
+          <a href="/notifications">View all</a>
+        </div>
+        <div class="notification-dropdown__list" data-notification-list>
+          <p class="muted-text">Loading updates...</p>
+        </div>
+      </div>
+      <a class="icon-button secondary" href="/users/profile">Profile</a>
+      <form action="/auth/logout" method="POST" class="inline-form">
+        <button class="icon-button danger" type="submit">Logout</button>
+      </form>
+    <% } else { %>
+      <a class="icon-button secondary" href="/auth/login">Login</a>
+      <a class="icon-button" href="/auth/register">Create account</a>
+    <% } %>
+  </div>
+</header>
+
+<div class="flash-stack" aria-live="polite" aria-atomic="true">
+  <% const activeFlashMessages = typeof flashMessages !== 'undefined' && flashMessages ? flashMessages : { success: [], error: [], warning: [], info: [] }; %>
+  <% ['success', 'error', 'warning', 'info'].forEach(function(type) { %>
+    <% (activeFlashMessages[type] || []).forEach(function(message) { %>
+      <div class="flash flash-<%= type %>" data-flash>
+        <span><%= message %></span>
+        <button type="button" class="flash-close" aria-label="Dismiss">×</button>
+      </div>
+    <% }); %>
+  <% }); %>
+</div>

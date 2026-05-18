@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/group.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Groups</p>
+          <h1>Your groups</h1>
+        </div>
+        <a class="primary-button" href="/groups/create">Create group</a>
+      </div>
+
+      <div class="two-column">
+        <section class="surface-card">
+          <h2>Joined groups</h2>
+          <div class="stack-list">
+            <% if (groups.length) { %>
+              <% groups.forEach(function(group) { %>
+                <a class="list-item" href="/groups/<%= group._id %>">
+                  <div>
+                    <strong><%= group.name %></strong>
+                    <p><%= group.description || 'No description' %></p>
+                  </div>
+                </a>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">You have not joined any groups yet.</p>
+            <% } %>
+          </div>
+        </section>
+
+        <section class="surface-card">
+          <h2>Pending invites</h2>
+          <div class="stack-list">
+            <% if (invites.length) { %>
+              <% invites.forEach(function(invite) { %>
+                <article class="list-item">
+                  <div>
+                    <strong><%= invite.group.name %></strong>
+                    <p>Invited by @<%= invite.fromUser.username %></p>
+                  </div>
+                  <div class="inline-actions">
+                    <form action="/groups/invites/<%= invite._id %>/accept" method="POST" class="inline-form">
+                      <button class="primary-button" type="submit">Accept</button>
+                    </form>
+                    <form action="/groups/invites/<%= invite._id %>/reject" method="POST" class="inline-form">
+                      <button class="secondary-button" type="submit">Reject</button>
+                    </form>
+                  </div>
+                </article>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No pending group invites.</p>
+            <% } %>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | <%= appName %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/group.css" />
+  </head>
+  <body class="app-page">
+    <%- include('../partials/navbar') %>
+    <main class="app-shell">
+      <%- include('../partials/sidebar') %>
+      <section class="content-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Groups</p>
+            <h1>Create group</h1>
+          </div>
+        </div>
+        <section class="surface-card">
+          <form class="form-stack" action="/groups/create" method="POST">
+            <label>
+              Group name
+              <input type="text" name="name" required />
+            </label>
+            <label>
+              Description
+              <textarea name="description" rows="4"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Create group</button>
+          </form>
+        </section>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

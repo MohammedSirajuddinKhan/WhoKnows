@@ -1,0 +1,11 @@
+.group-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.group-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  object-fit: cover;
+}

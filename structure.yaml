@@ -1,0 +1,100 @@
+WhoKnows/
+│
+├── app.js
+├── package.json
+├── .env
+├── .gitignore
+│
+├── config/
+│   ├── db.js
+│   ├── passport.js
+│   └── socket.js
+│
+├── models/
+│   ├── User.js
+│   ├── Message.js
+│   ├── AnonymousMessage.js
+│   ├── FriendRequest.js
+│   ├── Group.js
+│   ├── GroupRequest.js
+│   ├── Notification.js
+│   └── Chat.js
+│
+├── routes/
+│   ├── authRoutes.js
+│   ├── userRoutes.js
+│   ├── chatRoutes.js
+│   ├── anonymousRoutes.js
+│   ├── groupRoutes.js
+│   └── notificationRoutes.js
+│
+├── controllers/
+│   ├── authController.js
+│   ├── userController.js
+│   ├── chatController.js
+│   ├── anonymousController.js
+│   ├── groupController.js
+│   └── notificationController.js
+│
+├── middlewares/
+│   ├── isLoggedIn.js
+│   ├── isAdmin.js
+│   ├── upload.js
+│   └── errorHandler.js
+│
+├── services/
+│   ├── socketService.js
+│   ├── searchService.js
+│   └── notificationService.js
+│
+├── public/
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── auth.css
+│   │   ├── chat.css
+│   │   └── group.css
+│   │
+│   ├── js/
+│   │   ├── chat.js
+│   │   ├── search.js
+│   │   ├── anonymous.js
+│   │   └── socket-client.js
+│   │
+│   ├── images/
+│   └── uploads/
+│
+├── views/
+│   ├── partials/
+│   │   ├── navbar.ejs
+│   │   ├── footer.ejs
+│   │   └── sidebar.ejs
+│   │
+│   ├── auth/
+│   │   ├── login.ejs
+│   │   ├── register.ejs
+│   │   └── forgotPassword.ejs
+│   │
+│   ├── user/
+│   │   ├── dashboard.ejs
+│   │   ├── profile.ejs
+│   │   ├── search.ejs
+│   │   └── requests.ejs
+│   │
+│   ├── chat/
+│   │   ├── inbox.ejs
+│   │   ├── privateChat.ejs
+│   │   └── anonymousInbox.ejs
+│   │
+│   ├── group/
+│   │   ├── createGroup.ejs
+│   │   ├── groupList.ejs
+│   │   └── groupChat.ejs
+│   │
+│   └── error/
+│       ├── 404.ejs
+│       └── error.ejs
+│
+└── utils/
+    ├── generateLink.js
+    ├── formatDate.js
+    └── validators.js

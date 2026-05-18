@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Messages</p>
+          <h1>Inbox</h1>
+        </div>
+      </div>
+      <section class="surface-card">
+        <div class="stack-list">
+          <% if (chats.length) { %>
+            <% chats.forEach(function(chat) { const other = chat.participants.find((participant) => String(participant._id) !== String(currentUser._id)); %>
+              <a class="list-item chat-list-item" href="/chat/private/<%= other._id %>">
+                <div class="chat-peer">
+                  <strong>@<%= other.username %></strong>
+                  <p><%= chat.lastMessage || 'Start a conversation' %></p>
+                </div>
+                <small><%= formatDate(chat.lastMessageAt) %></small>
+              </a>
+            <% }); %>
+          <% } else { %>
+            <p class="muted-text">Your inbox is empty. Search users to begin.</p>
+          <% } %>
+        </div>
+      </section>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

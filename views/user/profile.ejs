@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | <%= appName %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body class="app-page">
+    <%- include('../partials/navbar') %>
+    <main class="app-shell">
+      <%- include('../partials/sidebar') %>
+      <section class="content-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Profile</p>
+            <h1>Your account</h1>
+          </div>
+        </div>
+
+        <div class="profile-layout">
+          <section class="surface-card profile-card">
+            <img
+              class="profile-avatar"
+              src="<%= profileUser.avatar %>"
+              alt="Profile avatar"
+            />
+            <div>
+              <h2>@<%= profileUser.username %></h2>
+              <p><%= profileUser.email %></p>
+              <p>
+                <%= profileUser.bio || 'Add a short bio to personalize your
+                profile.' %>
+              </p>
+            </div>
+            <div class="profile-actions">
+              <a
+                class="secondary-button"
+                href="<%= anonymousLink %>"
+                target="_blank"
+                rel="noreferrer"
+                >Open anonymous link</a
+              >
+              <button
+                class="secondary-button"
+                type="button"
+                data-copy-link
+                data-link="<%= anonymousLink %>"
+              >
+                Copy anonymous link
+              </button>
+            </div>
+          </section>
+
+          <section class="surface-card">
+            <h2>Edit profile</h2>
+            <form
+              class="form-stack"
+              action="/users/profile"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <label>
+                Username
+                <input
+                  type="text"
+                  name="username"
+                  value="<%= profileUser.username %>"
+                />
+              </label>
+              <label>
+                Bio
+                <textarea
+                  name="bio"
+                  rows="4"
+                  placeholder="Tell people a bit about yourself"
+                >
+<%= profileUser.bio %></textarea
+                >
+              </label>
+              <label>
+                Avatar
+                <input type="file" name="avatar" accept="image/*" />
+              </label>
+              <button class="primary-button" type="submit">Save changes</button>
+            </form>
+          </section>
+        </div>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

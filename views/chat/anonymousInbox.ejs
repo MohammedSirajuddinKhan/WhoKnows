@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Anonymous</p>
+          <h1><%= publicMode ? 'Send a message' : 'Anonymous inbox' %></h1>
+          <% if (recipient && recipient.username) { %>
+            <p>@<%= recipient.username %></p>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (publicMode) { %>
+        <section class="surface-card">
+          <form class="form-stack" action="/u/<%= recipient.username %>" method="POST">
+            <label>
+              Message
+              <textarea name="content" rows="6" placeholder="Write something anonymous and kind" required></textarea>
+            </label>
+            <button class="primary-button" type="submit">Send anonymously</button>
+          </form>
+        </section>
+      <% } %>
+
+      <section class="surface-card">
+        <div class="stack-list">
+          <% if (messages.length) { %>
+            <% messages.forEach(function(message) { %>
+              <article class="list-item anonymous-message">
+                <div>
+                  <strong><%= message.senderName || 'Anonymous' %></strong>
+                  <p><%= message.content %></p>
+                  <% if (message.replyText) { %>
+                    <div class="reply-box"><strong>Reply:</strong> <%= message.replyText %></div>
+                  <% } %>
+                </div>
+                <% if (!publicMode) { %>
+                  <div class="inline-actions">
+                    <form action="/anonymous/<%= message._id %>/reply" method="POST" class="inline-form">
+                      <input type="text" name="replyText" placeholder="Reply privately">
+                      <button class="secondary-button" type="submit">Reply</button>
+                    </form>
+                    <form action="/anonymous/<%= message._id %>/delete" method="POST" class="inline-form">
+                      <button class="secondary-button" type="submit">Delete</button>
+                    </form>
+                    <form action="/anonymous/<%= message._id %>/report" method="POST" class="inline-form">
+                      <button class="secondary-button" type="submit">Report</button>
+                    </form>
+                  </div>
+                <% } %>
+              </article>
+            <% }); %>
+          <% } else { %>
+            <p class="muted-text">No anonymous messages yet.</p>
+          <% } %>
+        </div>
+      </section>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

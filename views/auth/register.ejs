@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | <%= appName %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <%- include('../partials/navbar') %>
+    <main class="auth-shell">
+      <section class="auth-card">
+        <div class="hero-copy">
+          <p class="eyebrow">Get started</p>
+          <h1>Create your WhoKnows? account</h1>
+          <p>
+            Build your profile, share an anonymous link, and start chatting
+            instantly.
+          </p>
+        </div>
+        <form class="form-stack" action="/auth/register" method="POST">
+          <label>
+            Username
+            <input
+              type="text"
+              name="username"
+              placeholder="username"
+              value="<%= typeof oldInput !== 'undefined' && oldInput ? oldInput.username : '' %>"
+              required
+            />
+          </label>
+          <label>
+            Email
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value="<%= typeof oldInput !== 'undefined' && oldInput ? oldInput.email : '' %>"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input type="password" name="password" required />
+          </label>
+          <button class="primary-button" type="submit">Register</button>
+        </form>
+        <div class="auth-links">
+          <a href="/auth/login">Already have an account?</a>
+        </div>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

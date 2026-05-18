@@ -1,0 +1,15 @@
+<aside class="sidebar">
+  <% if (currentUser) { %>
+    <nav class="sidebar-nav">
+      <a href="/users/dashboard" class="sidebar-link">Dashboard</a>
+      <a href="/users/profile" class="sidebar-link">Profile</a>
+      <a href="/users/search" class="sidebar-link">Search</a>
+      <a href="/users/requests" class="sidebar-link">Requests</a>
+      <a href="/chat/inbox" class="sidebar-link">Private inbox</a>
+      <a href="/anonymous/inbox" class="sidebar-link">Anonymous inbox</a>
+      <a href="/groups" class="sidebar-link">Groups</a>
+      <a href="/notifications" class="sidebar-link">Notifications</a>
+      <a href="<%= generateLink(currentUser.username) %>" class="sidebar-link" target="_blank" rel="noreferrer">My anonymous link</a>
+    </nav>
+  <% } %>
+</aside>

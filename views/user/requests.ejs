@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Connections</p>
+          <h1>Requests and people</h1>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <section class="surface-card">
+          <h2>Incoming requests</h2>
+          <div class="stack-list">
+            <% if (incomingRequests && incomingRequests.length) { %>
+              <% incomingRequests.forEach(function(request) { %>
+                <article class="list-item">
+                  <div>
+                    <strong>@<%= request.fromUser.username %></strong>
+                    <p><%= request.fromUser.bio || 'No bio yet.' %></p>
+                  </div>
+                  <div class="inline-actions">
+                    <form action="/users/requests/<%= request._id %>/accept" method="POST" class="inline-form">
+                      <button class="primary-button" type="submit">Accept</button>
+                    </form>
+                    <form action="/users/requests/<%= request._id %>/reject" method="POST" class="inline-form">
+                      <button class="secondary-button" type="submit">Reject</button>
+                    </form>
+                  </div>
+                </article>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No incoming requests.</p>
+            <% } %>
+          </div>
+        </section>
+
+        <section class="surface-card">
+          <h2>Outgoing requests</h2>
+          <div class="stack-list">
+            <% if (outgoingRequests && outgoingRequests.length) { %>
+              <% outgoingRequests.forEach(function(request) { %>
+                <article class="list-item">
+                  <div>
+                    <strong>@<%= request.toUser.username %></strong>
+                    <p>Pending response</p>
+                  </div>
+                </article>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No outgoing requests.</p>
+            <% } %>
+          </div>
+        </section>
+      </div>
+
+      <div class="two-column">
+        <section class="surface-card">
+          <h2>Friends</h2>
+          <div class="stack-list">
+            <% if (friends && friends.length) { %>
+              <% friends.forEach(function(friend) { %>
+                <article class="list-item">
+                  <div>
+                    <strong>@<%= friend.username %></strong>
+                    <p><%= friend.bio || 'Connected user' %></p>
+                  </div>
+                  <div class="inline-actions">
+                    <a class="secondary-button" href="/chat/private/<%= friend._id %>">Chat</a>
+                    <form action="/users/block/<%= friend._id %>" method="POST" class="inline-form">
+                      <button class="secondary-button" type="submit">Block</button>
+                    </form>
+                  </div>
+                </article>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No friends yet.</p>
+            <% } %>
+          </div>
+        </section>
+
+        <section class="surface-card">
+          <h2>Blocked users</h2>
+          <div class="stack-list">
+            <% if (blockedUsers && blockedUsers.length) { %>
+              <% blockedUsers.forEach(function(user) { %>
+                <article class="list-item">
+                  <div>
+                    <strong>@<%= user.username %></strong>
+                  </div>
+                  <form action="/users/unblock/<%= user._id %>" method="POST" class="inline-form">
+                    <button class="secondary-button" type="submit">Unblock</button>
+                  </form>
+                </article>
+              <% }); %>
+            <% } else { %>
+              <p class="muted-text">No blocked users.</p>
+            <% } %>
+          </div>
+        </section>
+      </div>
+
+      <% if (typeof notifications !== 'undefined') { %>
+        <section class="surface-card">
+          <h2>Notifications</h2>
+          <div class="stack-list">
+            <% notifications.forEach(function(notification) { %>
+              <a class="list-item" href="<%= notification.link %>">
+                <div>
+                  <strong><%= notification.title %></strong>
+                  <p><%= notification.message %></p>
+                </div>
+              </a>
+            <% }); %>
+          </div>
+        </section>
+      <% } %>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

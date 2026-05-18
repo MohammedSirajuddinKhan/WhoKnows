@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= appName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/chat.css">
+  <link rel="stylesheet" href="/css/group.css">
+</head>
+<body class="app-page">
+  <%- include('../partials/navbar') %>
+  <main class="app-shell">
+    <%- include('../partials/sidebar') %>
+    <section class="content-panel chat-panel">
+      <header class="chat-header">
+        <div>
+          <p class="eyebrow">Group chat</p>
+          <h1><%= group.name %></h1>
+          <p><%= group.description || 'Telegram-inspired group conversation' %></p>
+          <p class="typing-status" data-typing-status></p>
+        </div>
+        <div class="inline-actions">
+          <form action="/groups/<%= group._id %>/leave" method="POST" class="inline-form">
+            <button class="secondary-button" type="submit">Leave group</button>
+          </form>
+        </div>
+      </header>
+
+      <% if (isAdmin) { %>
+        <section class="surface-card">
+          <div class="surface-card__head">
+            <h2>Invite members</h2>
+          </div>
+          <form class="form-stack" action="/groups/<%= group._id %>/invite" method="POST">
+            <label>
+              Usernames or IDs, comma separated
+              <input type="text" name="userIdentifiers" placeholder="bob, alice, 64f...">
+            </label>
+            <button class="primary-button" type="submit">Send invite</button>
+          </form>
+        </section>
+      <% } %>
+
+      <section class="surface-card">
+        <div class="surface-card__head">
+          <h2>Members</h2>
+        </div>
+        <div class="stack-list">
+          <% group.members.forEach(function(member) { %>
+            <article class="list-item">
+              <div>
+                <strong>@<%= member.username %></strong>
+                <% if (String(group.creator) === String(member._id)) { %>
+                  <span class="muted-text">Creator</span>
+                <% } %>
+              </div>
+              <% if (isAdmin && String(member._id) !== String(currentUser._id)) { %>
+                <form action="/groups/<%= group._id %>/members/<%= member._id %>/remove" method="POST" class="inline-form">
+                  <button class="secondary-button" type="submit">Remove</button>
+                </form>
+              <% } %>
+            </article>
+          <% }); %>
+        </div>
+      </section>
+
+      <section class="messages-panel" data-chat-room data-group-id="<%= group._id %>">
+        <div class="message-stream" data-message-stream>
+          <% messages.forEach(function(message) { %>
+            <article class="message-bubble <%= String(message.sender._id) === String(currentUser._id) ? 'is-me' : 'is-them' %>">
+              <p><strong>@<%= message.sender.username %>:</strong> <%= message.content %></p>
+              <small><%= formatDate(message.createdAt) %></small>
+            </article>
+          <% }); %>
+        </div>
+
+        <form class="chat-compose" data-group-chat-form action="/groups/<%= group._id %>/messages" method="POST">
+          <input type="text" name="content" placeholder="Write a group message..." autocomplete="off" required>
+          <button class="primary-button" type="submit">Send</button>
+        </form>
+      </section>
+    </section>
+  </main>
+  <script>
+    window.chatContext = {
+      groupId: '<%= group._id %>',
+      currentUserId: '<%= currentUser._id %>',
+      mode: 'group'
+    };
+  </script>
+  <%- include('../partials/footer') %>
+</body>
+</html>

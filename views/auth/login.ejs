@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | <%= appName %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <%- include('../partials/navbar') %>
+    <main class="auth-shell">
+      <section class="auth-card">
+        <div class="hero-copy">
+          <p class="eyebrow">Welcome back</p>
+          <h1>Sign in to WhoKnows?</h1>
+          <p>
+            Use private chat, groups, and anonymous messaging from one clean
+            inbox.
+          </p>
+        </div>
+        <form class="form-stack" action="/auth/login" method="POST">
+          <label>
+            Username or email
+            <input
+              type="text"
+              name="identifier"
+              placeholder="you@example.com"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input type="password" name="password" required />
+          </label>
+          <button class="primary-button" type="submit">Login</button>
+        </form>
+        <div class="auth-links">
+          <a href="/auth/register">Create account</a>
+          <a href="/auth/forgot-password">Forgot password?</a>
+        </div>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>
