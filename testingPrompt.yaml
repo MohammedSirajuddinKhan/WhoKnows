@@ -1,0 +1,199 @@
+Act as a senior QA engineer, security tester, full-stack tester, and debugging assistant.
+
+Your task is to thoroughly test my entire project codebase from lowest-level functionality to highest-level user flows.
+
+PROJECT TESTING SCOPE:
+Test everything possible in the codebase including:
+- frontend
+- backend
+- database
+- APIs
+- authentication
+- authorization
+- file uploads
+- environment configs
+- deployment readiness
+- responsiveness
+- security vulnerabilities
+- edge cases
+- code quality
+
+PHASE 1: STATIC CODE ANALYSIS
+Scan the entire codebase and identify:
+- syntax errors
+- logical bugs
+- dead code
+- unused imports
+- duplicate code
+- inconsistent naming
+- bad folder structure
+- async/await issues
+- callback hell
+- missing try/catch
+- promise rejection risks
+- route conflicts
+- middleware issues
+- incorrect exports/imports
+- invalid schema logic
+- frontend rendering issues
+- broken state handling
+- CSS conflicts
+- accessibility issues
+
+PHASE 2: BACKEND TESTING
+Test all backend systems:
+- server startup
+- environment variable validation
+- database connection
+- schema validation
+- model relationships
+- CRUD operations
+- route handlers
+- controllers
+- middleware chain
+- cookies
+- sessions
+- JWT/auth logic
+- password hashing
+- role protection
+- error handlers
+- status codes
+- redirects
+- file upload logic
+- cloudinary/storage integration
+- socket connections
+- websocket events
+- rate limiting
+- input sanitization
+
+Check:
+- broken endpoints
+- unhandled errors
+- invalid request payloads
+- race conditions
+- duplicate inserts
+- database inconsistencies
+
+PHASE 3: FRONTEND TESTING
+Test all frontend behavior:
+- rendering issues
+- broken layouts
+- CSS overlaps
+- responsiveness
+- mobile view
+- tablet view
+- desktop view
+- navigation flow
+- forms
+- validations
+- buttons
+- modals
+- dropdowns
+- search bars
+- chat UI
+- scrolling behavior
+- animations
+- loading states
+- empty states
+- dark/light consistency
+- favicon/logo rendering
+
+Check:
+- broken links
+- missing assets
+- hydration issues
+- event listeners
+- DOM issues
+- EJS rendering issues
+
+PHASE 4: AUTHENTICATION FLOW TESTING
+Test:
+- signup
+- login
+- logout
+- forgot password
+- session persistence
+- protected routes
+- invalid credentials
+- token expiry
+- unauthorized access
+- brute force weaknesses
+
+PHASE 5: DATABASE TESTING
+Validate:
+- schema rules
+- required fields
+- defaults
+- indexing opportunities
+- unique constraints
+- relation consistency
+- cascading deletes
+- orphaned data risks
+
+PHASE 6: SECURITY TESTING
+Audit for:
+- XSS
+- CSRF
+- NoSQL injection
+- SQL injection
+- path traversal
+- insecure file uploads
+- weak password logic
+- hardcoded secrets
+- exposed credentials
+- insecure cookies
+- CORS misconfiguration
+- session vulnerabilities
+
+PHASE 7: USER FLOW TESTING
+Simulate real users:
+- first-time user journey
+- returning user
+- admin flow
+- invalid user behavior
+- spam behavior
+- malicious input behavior
+
+PHASE 8: PERFORMANCE TESTING
+Check:
+- large data rendering
+- API latency
+- DB query inefficiencies
+- repeated renders
+- memory leaks
+- slow routes
+- large file upload handling
+- socket performance
+
+PHASE 9: DEPLOYMENT READINESS
+Check:
+- production configs
+- environment variables
+- build issues
+- static asset handling
+- deployment compatibility
+- missing dependencies
+- package vulnerabilities
+
+OUTPUT FORMAT:
+For every issue found:
+1. severity level (low/medium/high/critical)
+2. file path
+3. exact issue
+4. why it breaks or is risky
+5. fix recommendation
+6. corrected code snippet
+
+After testing, generate:
+- overall project health score /100
+- security score /100
+- code quality score /100
+- production readiness score /100
+
+Finally:
+Provide a prioritized bug-fix roadmap from most critical to least critical.
+
+IMPORTANT:
+Do not stop after finding one issue.
+Continue recursively testing every file, route, component, controller, middleware, schema, and UI element until the entire codebase has been audited thoroughly.
+Be brutally honest and exhaustive.

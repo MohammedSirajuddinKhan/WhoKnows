@@ -1,0 +1,163 @@
+Implement Cloudinary-based file and image upload functionality into my existing project without breaking any current backend or frontend logic.
+
+PROJECT REQUIREMENTS:
+
+1. CLOUDINARY SETUP
+Implement full Cloudinary integration for:
+- image uploads
+- file uploads
+- profile pictures
+- chat attachments
+
+Use:
+- cloudinary npm package
+- multer
+- multer-storage-cloudinary
+
+Create proper config files:
+- config/cloudinary.js
+
+Use environment variables:
+- CLOUDINARY_CLOUD_NAME
+- CLOUDINARY_API_KEY
+- CLOUDINARY_API_SECRET
+
+Do not hardcode secrets.
+
+2. BACKEND IMPLEMENTATION
+Add backend logic for:
+- uploading images
+- uploading files/documents
+- storing Cloudinary URLs in database
+- deleting files if needed
+
+Support upload types:
+- jpg
+- jpeg
+- png
+- gif
+- webp
+- pdf
+- doc
+- docx
+- ppt
+- pptx
+- txt
+- zip
+
+Add:
+- file size validation
+- file type validation
+- error handling
+- upload middleware
+
+Use proper folder separation in Cloudinary:
+- profile_pictures
+- chat_images
+- chat_files
+
+Maintain existing:
+- routes
+- controllers
+- authentication
+- database schemas
+
+3. DATABASE CHANGES
+Update schema/models to store:
+- fileUrl
+- publicId
+- fileType
+- originalName
+- uploadedBy
+- timestamp
+
+Do not break old schema logic.
+
+4. FRONTEND IMPLEMENTATION
+Add frontend upload UI in all relevant places.
+
+A. Chat Input Area
+Add:
+- emoji picker button
+- attachment/file upload button
+- image upload button
+- preview before sending
+- remove uploaded preview option
+
+B. Profile Section
+Add:
+- upload/change profile picture button
+- image preview before saving
+
+C. Message UI
+Render:
+- uploaded images preview inside chat
+- downloadable files
+- file name
+- file icon by extension
+- upload timestamp
+
+5. EMOJI FUNCTIONALITY
+Implement emoji support using:
+- emoji picker library
+
+Features:
+- emoji icon beside input
+- popup emoji selector
+- click to insert emoji into input
+- mobile friendly
+
+6. FILE ATTACHMENT FUNCTIONALITY
+Frontend should support:
+- select files
+- drag and drop (if possible)
+- file preview
+- upload progress
+- cancel upload
+
+Render uploaded files beautifully in chat.
+
+7. UI/UX REQUIREMENTS
+Match my current project styling.
+
+Use existing design palette.
+Keep placements modern like:
+- WhatsApp
+- Telegram
+- Discord
+- Microsoft Teams
+
+Buttons needed:
+- emoji
+- image upload
+- attachment
+- send
+
+Input layout:
+[emoji] [attach] [image] [message input] [send]
+
+8. SECURITY
+Validate:
+- file type
+- file size
+- upload permissions
+
+Prevent:
+- malicious uploads
+- unsupported formats
+
+9. OUTPUT
+Generate:
+- backend code
+- frontend code
+- schema updates
+- routes
+- middleware
+- required npm installs
+- .env example
+
+IMPORTANT RULES:
+- keep all current routes, EJS variables, IDs, classes, forms, and socket logic intact
+- do not break existing project structure
+- only extend functionality cleanly
+- production-ready implementation only
