@@ -1,3 +1,5 @@
+const multer = require("multer");
+
 module.exports = function errorHandler(err, req, res, next) {
   if (res.headersSent) {
     return next(err);
@@ -9,6 +11,14 @@ module.exports = function errorHandler(err, req, res, next) {
 
   if (req.accepts("json") && !req.accepts("html")) {
     return res.status(statusCode).json({ success: false, message });
+  }
+
+  if (
+    err instanceof multer.MulterError ||
+    message === "Only image files are allowed."
+  ) {
+    req.flash("error", message);
+    return res.redirect(req.get("Referrer") || "/users/profile");
   }
 
   req.flash("error", message);

@@ -12,28 +12,24 @@
   const notificationList = document.querySelector("[data-notification-list]");
 
   function renderMessage(message, mode) {
-    if (!messageStream) {
+    if (!messageStream || !window.WKMessageRenderer) {
       return;
     }
 
-    const sender =
-      message.sender && message.sender.username
-        ? message.sender
-        : { username: "Anonymous" };
-    const isMine =
-      String(sender._id || sender.id) === String(window.currentUser.id);
-    const wrapper = document.createElement("article");
-    wrapper.className = `message-bubble ${isMine ? "is-me" : "is-them"}`;
-    wrapper.dataset.messageId = message._id;
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = window.WKMessageRenderer.renderMessageHTML(
+      message,
+      mode,
+      window.currentUser.id,
+    );
 
-    if (mode === "group") {
-      wrapper.innerHTML = `<p><strong>@${sender.username}:</strong> ${message.content}</p><small>${new Date(message.createdAt || Date.now()).toLocaleString()}</small>`;
-    } else {
-      wrapper.innerHTML = `<p>${message.content}</p><small>${new Date(message.createdAt || Date.now()).toLocaleString()}</small>`;
+    const article = wrapper.firstElementChild;
+    if (!article) {
+      return;
     }
 
-    messageStream.appendChild(wrapper);
-    wrapper.scrollIntoView({ behavior: "smooth", block: "end" });
+    messageStream.appendChild(article);
+    article.scrollIntoView({ behavior: "smooth", block: "end" });
   }
 
   socket.on("chat:message", (message) => {
@@ -48,12 +44,12 @@
     }
   });
 
-  socket.on("chat:seen", ({ messageId, seenAt }) => {
-    const bubble = document.querySelector(
-      `[data-message-id="${messageId}"] small`,
+  socket.on("chat:seen", ({ messageId }) => {
+    const receipt = document.querySelector(
+      `[data-message-id="${messageId}"] .receipt-pill`,
     );
-    if (bubble) {
-      bubble.textContent = `${bubble.textContent.split(" · ")[0]} · seen`;
+    if (receipt) {
+      receipt.textContent = "seen";
     }
   });
 
@@ -87,7 +83,7 @@
       const item = document.createElement("a");
       item.className = "notification-item";
       item.href = notification.link;
-      item.innerHTML = `<strong>${notification.title}</strong><span>${notification.message}</span>`;
+      item.innerHTML = `<strong>${window.WKMessageRenderer ? window.WKMessageRenderer.escapeHtml(notification.title) : notification.title}</strong><span>${window.WKMessageRenderer ? window.WKMessageRenderer.escapeHtml(notification.message) : notification.message}</span>`;
       notificationList.prepend(item);
     }
   });

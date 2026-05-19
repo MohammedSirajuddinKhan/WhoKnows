@@ -7,6 +7,11 @@ const Notification = require("../models/Notification");
 const { searchUsers } = require("../services/searchService");
 const { createNotification } = require("../services/notificationService");
 const generateLink = require("../utils/generateLink");
+const { cloudinary, hasCloudinaryEnv } = require("../config/cloudinary");
+const {
+  getStoredFileUrl,
+  getStoredPublicId,
+} = require("../utils/uploadHelpers");
 
 function flashValidationErrors(req, errors) {
   req.flash(
@@ -86,7 +91,23 @@ exports.updateProfile = async (req, res, next) => {
     if (req.body.username)
       user.username = req.body.username.trim().toLowerCase();
     if (req.body.bio !== undefined) user.bio = req.body.bio.trim();
-    if (req.file) user.avatar = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      if (user.avatarPublicId && hasCloudinaryEnv) {
+        try {
+          await cloudinary.uploader.destroy(user.avatarPublicId, {
+            resource_type: "image",
+          });
+        } catch (error) {
+          console.warn(
+            "Failed to remove old avatar from Cloudinary",
+            error.message,
+          );
+        }
+      }
+
+      user.avatar = getStoredFileUrl(req.file) || user.avatar;
+      user.avatarPublicId = getStoredPublicId(req.file);
+    }
     await user.save();
 
     req.flash("success", "Profile updated successfully.");

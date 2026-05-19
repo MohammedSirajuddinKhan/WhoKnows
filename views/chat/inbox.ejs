@@ -6,35 +6,59 @@
   <title><%= title %> | <%= appName %></title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/chat.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body class="app-page">
   <%- include('../partials/navbar') %>
   <main class="app-shell">
     <%- include('../partials/sidebar') %>
-    <section class="content-panel">
-      <div class="panel-header">
-        <div>
-          <p class="eyebrow">Messages</p>
-          <h1>Inbox</h1>
-        </div>
+    <section class="content-panel chat-panel">
+      <div class="workspace-shell">
+        <aside class="surface-card conversation-rail">
+          <div class="conversation-rail__head">
+            <div>
+              <p class="eyebrow">Chats</p>
+              <h1>Inbox</h1>
+            </div>
+            <span class="status-pill"><%= chats.length %> threads</span>
+          </div>
+          <div class="conversation-rail__list">
+            <% if (chats.length) { %>
+              <% chats.forEach(function(chat) { const other = chat.participants.find((participant) => String(participant._id) !== String(currentUser._id)); %>
+                <a class="chat-list-item" href="/chat/private/<%= other._id %>">
+                  <img class="chat-avatar" src="<%= other.avatar %>" alt="<%= other.username %> avatar">
+                  <div class="chat-list-body">
+                    <div class="chat-list-topline">
+                      <strong>@<%= other.username %></strong>
+                      <small><%= formatDate(chat.lastMessageAt) %></small>
+                    </div>
+                    <p><%= chat.lastMessage && (chat.lastMessage.content || chat.lastMessage.originalName) ? (chat.lastMessage.content || chat.lastMessage.originalName) : 'Start a conversation' %></p>
+                  </div>
+                  <% if (chat.unreadCount > 0) { %>
+                    <span class="unread-badge"><%= chat.unreadCount %></span>
+                  <% } %>
+                </a>
+              <% }); %>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state__icon">◎</div>
+                <h2>No conversations yet</h2>
+                <p>Search for someone to start a private message.</p>
+                <a class="primary-button" href="/users/search">Search users</a>
+              </div>
+            <% } %>
+          </div>
+        </aside>
+
+        <section class="surface-card workspace-placeholder">
+          <div class="placeholder-panel">
+            <div class="placeholder-panel__icon">✦</div>
+            <h2>Select a conversation</h2>
+            <p>Open a thread on the left to read messages, send replies, and track read receipts.</p>
+            <a class="secondary-button" href="/users/search">Find people</a>
+          </div>
+        </section>
       </div>
-      <section class="surface-card">
-        <div class="stack-list">
-          <% if (chats.length) { %>
-            <% chats.forEach(function(chat) { const other = chat.participants.find((participant) => String(participant._id) !== String(currentUser._id)); %>
-              <a class="list-item chat-list-item" href="/chat/private/<%= other._id %>">
-                <div class="chat-peer">
-                  <strong>@<%= other.username %></strong>
-                  <p><%= chat.lastMessage || 'Start a conversation' %></p>
-                </div>
-                <small><%= formatDate(chat.lastMessageAt) %></small>
-              </a>
-            <% }); %>
-          <% } else { %>
-            <p class="muted-text">Your inbox is empty. Search users to begin.</p>
-          <% } %>
-        </div>
-      </section>
     </section>
   </main>
   <%- include('../partials/footer') %>

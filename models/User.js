@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
       default:
         'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="64" fill="%230d1723"/><circle cx="128" cy="102" r="42" fill="%234db6ff" fill-opacity="0.8"/><path d="M54 214c16-31 43-46 74-46s58 15 74 46" fill="%234db6ff" fill-opacity="0.25"/></svg>',
     },
+    avatarPublicId: { type: String, default: null },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     lastSeen: { type: Date, default: Date.now },

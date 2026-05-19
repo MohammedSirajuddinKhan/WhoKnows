@@ -6,6 +6,7 @@
   <title><%= title %> | <%= appName %></title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/chat.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body class="app-page">
   <%- include('../partials/navbar') %>
@@ -38,14 +39,15 @@
         <div class="stack-list">
           <% if (messages.length) { %>
             <% messages.forEach(function(message) { %>
-              <article class="list-item anonymous-message">
-                <div>
+              <article class="anonymous-card">
+                <div class="anonymous-card__head">
                   <strong><%= message.senderName || 'Anonymous' %></strong>
-                  <p><%= message.content %></p>
-                  <% if (message.replyText) { %>
-                    <div class="reply-box"><strong>Reply:</strong> <%= message.replyText %></div>
-                  <% } %>
+                  <span class="status-pill">Hidden identity</span>
                 </div>
+                <p><%= message.content %></p>
+                <% if (message.replyText) { %>
+                  <div class="reply-box"><strong>Reply:</strong> <%= message.replyText %></div>
+                <% } %>
                 <% if (!publicMode) { %>
                   <div class="inline-actions">
                     <form action="/anonymous/<%= message._id %>/reply" method="POST" class="inline-form">
@@ -63,7 +65,11 @@
               </article>
             <% }); %>
           <% } else { %>
-            <p class="muted-text">No anonymous messages yet.</p>
+            <div class="empty-state">
+              <div class="empty-state__icon">◎</div>
+              <h2>No anonymous messages yet.</h2>
+              <p>Incoming anonymous notes will show up here once someone uses your link.</p>
+            </div>
           <% } %>
         </div>
       </section>

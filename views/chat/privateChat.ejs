@@ -6,45 +6,134 @@
   <title><%= title %> | <%= appName %></title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/chat.css">
+   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body class="app-page">
   <%- include('../partials/navbar') %>
   <main class="app-shell">
     <%- include('../partials/sidebar') %>
     <section class="content-panel chat-panel">
-      <header class="chat-header">
-        <div>
-          <p class="eyebrow">Private chat</p>
-          <h1>@<%= otherUser.username %></h1>
-          <p><%= otherUser.bio || 'Accepted friend conversation' %></p>
-          <p class="typing-status" data-typing-status></p>
-        </div>
-        <div class="status-pill <%= otherUser.isOnline ? 'is-online' : 'is-offline' %>"><%= otherUser.isOnline ? 'Online' : 'Offline' %></div>
-      </header>
+      <div class="workspace-shell">
+        <aside class="surface-card conversation-rail">
+          <div class="conversation-rail__head">
+            <div>
+              <p class="eyebrow">Private chats</p>
+              <h1>Inbox</h1>
+            </div>
+            <a class="secondary-button" href="/chat/inbox">All chats</a>
+          </div>
+          <div class="conversation-rail__list">
+            <% (typeof recentChats !== 'undefined' ? recentChats : []).forEach(function(conversation) { const peer = conversation.participants.find((participant) => String(participant._id) !== String(currentUser._id)); %>
+              <a class="chat-list-item <%= String(peer._id) === String(otherUser._id) ? 'is-active' : '' %>" href="/chat/private/<%= peer._id %>">
+                <img class="chat-avatar" src="<%= peer.avatar %>" alt="<%= peer.username %> avatar">
+                <div class="chat-list-body">
+                  <div class="chat-list-topline">
+                    <strong>@<%= peer.username %></strong>
+                    <small><%= formatDate(conversation.lastMessageAt) %></small>
+                  </div>
+                  <p><%= conversation.lastMessage && (conversation.lastMessage.content || conversation.lastMessage.originalName) ? (conversation.lastMessage.content || conversation.lastMessage.originalName) : 'Start a conversation' %></p>
+                </div>
+                <% if (conversation.unreadCount > 0) { %>
+                  <span class="unread-badge"><%= conversation.unreadCount %></span>
+                <% } %>
+              </a>
+            <% }); %>
+          </div>
+        </aside>
 
-      <section class="messages-panel" data-chat-room data-chat-id="<%= chat._id %>" data-other-user-id="<%= otherUser._id %>">
-        <div class="message-stream" data-message-stream>
-          <% messages.forEach(function(message) { %>
-            <article class="message-bubble <%= String(message.sender._id) === String(currentUser._id) ? 'is-me' : 'is-them' %>" data-message-id="<%= message._id %>">
-              <p><%= message.content %></p>
-              <small>
-                <%= formatDate(message.createdAt) %>
-                <% if (message.status) { %> · <%= message.status %><% } %>
-              </small>
-              <% if (String(message.sender._id) === String(currentUser._id)) { %>
-                <form action="/chat/messages/<%= message._id %>/delete" method="POST" class="message-actions">
-                  <button type="submit">Delete</button>
-                </form>
+        <section class="chat-stage surface-card" data-chat-room data-chat-id="<%= chat._id %>" data-other-user-id="<%= otherUser._id %>">
+          <header class="chat-header">
+            <div class="chat-header__profile">
+              <img class="chat-avatar chat-avatar--lg" src="<%= otherUser.avatar %>" alt="<%= otherUser.username %> avatar">
+              <div>
+                <p class="eyebrow">Private chat</p>
+                <h1>@<%= otherUser.username %></h1>
+                <p class="chat-subtitle"><%= otherUser.bio || 'Accepted friend conversation' %></p>
+                <div class="presence-line">
+                  <span class="presence-dot <%= otherUser.isOnline ? 'is-online' : 'is-offline' %>"></span>
+                  <span class="status-pill <%= otherUser.isOnline ? 'is-online' : 'is-offline' %>"><%= otherUser.isOnline ? 'Online now' : 'Offline' %></span>
+                </div>
+              </div>
+            </div>
+            <div class="chat-header__actions">
+              <button class="icon-button" type="button" aria-label="Voice call">Call</button>
+              <button class="icon-button" type="button" aria-label="Video call">Video</button>
+              <button class="icon-button" type="button" aria-label="More options">⋯</button>
+            </div>
+          </header>
+
+          <section class="messages-panel" data-chat-room data-chat-id="<%= chat._id %>" data-other-user-id="<%= otherUser._id %>">
+            <div class="message-stream" data-message-stream>
+              <% if (messages.length) { %>
+                <% messages.forEach(function(message) { %>
+                  <article class="message-bubble <%= String(message.sender._id) === String(currentUser._id) ? 'is-me' : 'is-them' %>" data-message-id="<%= message._id %>">
+                    <% if (message.content) { %>
+                      <p><%= message.content %></p>
+                    <% } %>
+                    <% if (message.fileUrl) { %>
+                      <% const isImage = message.fileType && String(message.fileType).startsWith('image/'); %>
+                      <% const fileLabel = message.originalName || 'Attachment'; %>
+                      <% if (isImage) { %>
+                        <a class="attachment-card attachment-card--image" href="<%= message.fileUrl %>" target="_blank" rel="noreferrer">
+                          <img class="attachment-card__image" src="<%= message.fileUrl %>" alt="<%= fileLabel %>">
+                          <div class="attachment-card__meta">
+                            <strong><%= fileLabel %></strong>
+                            <small><%= message.fileType || 'Image attachment' %></small>
+                          </div>
+                        </a>
+                      <% } else { %>
+                        <a class="attachment-card attachment-card--file" href="<%= message.fileUrl %>" target="_blank" rel="noreferrer" download>
+                          <div class="attachment-card__icon"><%= fileLabel.split('.').pop().slice(0, 4).toUpperCase() %></div>
+                          <div class="attachment-card__meta">
+                            <strong><%= fileLabel %></strong>
+                            <small><%= message.fileType || 'File attachment' %></small>
+                          </div>
+                        </a>
+                      <% } %>
+                    <% } %>
+                    <div class="message-meta">
+                      <small><%= formatDate(message.uploadedAt || message.createdAt) %></small>
+                      <% if (String(message.sender._id) === String(currentUser._id)) { %>
+                        <span class="receipt-pill"><%= message.status || 'sent' %></span>
+                      <% } %>
+                    </div>
+                    <% if (String(message.sender._id) === String(currentUser._id)) { %>
+                      <form action="/chat/messages/<%= message._id %>/delete" method="POST" class="message-actions">
+                        <button type="submit">Delete</button>
+                      </form>
+                    <% } %>
+                  </article>
+                <% }); %>
+              <% } else { %>
+                <div class="empty-state empty-state--compact">
+                  <div class="empty-state__icon">✉</div>
+                  <h2>Start the conversation</h2>
+                  <p>Messages, read receipts, and typing indicators will appear here.</p>
+                </div>
               <% } %>
-            </article>
-          <% }); %>
-        </div>
+            </div>
 
-        <form class="chat-compose" data-private-chat-form action="/chat/private/<%= otherUser._id %>/messages" method="POST">
-          <input type="text" name="content" placeholder="Write a message..." autocomplete="off" required>
-          <button class="primary-button" type="submit">Send</button>
-        </form>
-      </section>
+            <div class="composer-shell">
+              <div class="attachment-preview" data-attachment-preview hidden></div>
+              <div class="upload-progress" data-upload-progress hidden>
+                <div class="upload-progress__track"><span class="upload-progress__bar" data-upload-progress-bar></span></div>
+                <small data-upload-progress-label>Uploading...</small>
+                <button class="secondary-button upload-progress__cancel" type="button" data-upload-cancel>Cancel</button>
+              </div>
+              <div class="emoji-popover" data-emoji-picker hidden></div>
+              <form class="chat-compose" data-private-chat-form action="/chat/private/<%= otherUser._id %>/messages" method="POST" enctype="multipart/form-data">
+                <button class="icon-button chat-utility" type="button" aria-label="Emoji picker" data-emoji-toggle>☺</button>
+                <button class="icon-button chat-utility" type="button" aria-label="Attach file" data-file-trigger="attachmentFile">＋</button>
+                <button class="icon-button chat-utility" type="button" aria-label="Attach image" data-file-trigger="attachmentImage">🖼</button>
+                <input class="visually-hidden" type="file" name="attachmentFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip" data-attachment-input="file">
+                <input class="visually-hidden" type="file" name="attachmentImage" accept="image/*" data-attachment-input="image">
+                <input type="text" name="content" placeholder="Write a message..." autocomplete="off">
+                <button class="primary-button" type="submit">Send</button>
+              </form>
+            </div>
+          </section>
+        </section>
+      </div>
     </section>
   </main>
   <script>

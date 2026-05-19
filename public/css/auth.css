@@ -6,28 +6,81 @@
   min-height: calc(100vh - 8rem);
   display: grid;
   place-items: center;
-  padding: 2rem 1.2rem 3rem;
+  padding: 1rem 0.85rem 1.25rem;
 }
 
 .auth-card {
   width: min(560px, 100%);
-  padding: 1.4rem;
+  padding: 1rem;
   display: grid;
-  gap: 1.25rem;
+  gap: 0.9rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at top right,
+    rgba(98, 100, 167, 0.08),
+    transparent 38%
+  );
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-copy h1 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.15rem);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.hero-copy p {
+  margin-bottom: 0;
+  font-size: 0.98rem;
+  max-width: 56ch;
 }
 
 .auth-links {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-links a {
-  color: var(--accent);
+  color: var(--link);
+}
+
+.auth-card form {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card label {
+  color: var(--text-secondary);
+}
+
+.auth-card input,
+.auth-card textarea {
+  border-radius: 12px;
+}
+
+@media (max-width: 760px) {
+  .auth-shell {
+    padding: 0.85rem 0.7rem 1rem;
+  }
+
+  .auth-card {
+    padding: 0.85rem;
+  }
 }

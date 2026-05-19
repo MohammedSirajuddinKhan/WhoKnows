@@ -11,6 +11,10 @@ router.get("/inbox", chatController.inbox);
 router.get("/private/:userId", chatController.privateChat);
 router.post(
   "/private/:userId/messages",
+  upload.chatAttachments.fields([
+    { name: "attachmentImage", maxCount: 1 },
+    { name: "attachmentFile", maxCount: 1 },
+  ]),
   messageValidators,
   chatController.sendPrivateMessage,
 );

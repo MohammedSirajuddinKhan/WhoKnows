@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %> | <%= appName %></title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="app-page">
     <%- include('../partials/navbar') %>
@@ -78,10 +79,30 @@
 <%= profileUser.bio %></textarea
                 >
               </label>
-              <label>
-                Avatar
-                <input type="file" name="avatar" accept="image/*" />
-              </label>
+              <div class="profile-upload">
+                <img
+                  class="profile-upload__preview"
+                  data-avatar-preview
+                  src="<%= profileUser.avatar %>"
+                  alt="Profile image preview"
+                />
+                <label
+                  class="secondary-button profile-upload__trigger"
+                  for="avatar-upload"
+                  >Upload/change profile picture</label
+                >
+                <input
+                  id="avatar-upload"
+                  class="visually-hidden"
+                  type="file"
+                  name="avatar"
+                  accept="image/*"
+                  data-avatar-input
+                />
+                <p class="muted-text">
+                  Preview the new image before saving changes.
+                </p>
+              </div>
               <button class="primary-button" type="submit">Save changes</button>
             </form>
           </section>

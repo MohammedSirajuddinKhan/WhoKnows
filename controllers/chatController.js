@@ -5,6 +5,11 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { createNotification } = require("../services/notificationService");
 const { emitToUser } = require("../services/socketService");
+const {
+  buildUploadMetadata,
+  getFirstUpload,
+  getUploadDescription,
+} = require("../utils/uploadHelpers");
 
 function validateChatAccess(currentUser, otherUser) {
   const isBlocked =
@@ -31,22 +36,38 @@ async function getOrCreateChat(userId, otherUserId) {
   return chat;
 }
 
+async function buildConversationSidebar(userId) {
+  const chats = await Chat.find({ participants: userId })
+    .populate("participants", "username avatar isOnline lastSeen bio")
+    .sort({ updatedAt: -1 });
+
+  return Promise.all(
+    chats.map(async (chat) => {
+      const lastMessage = await Message.findOne({ chat: chat._id })
+        .populate("sender", "username avatar")
+        .sort({ createdAt: -1 })
+        .lean();
+      const unreadCount = await Message.countDocuments({
+        chat: chat._id,
+        recipient: userId,
+        status: { $ne: "seen" },
+        deletedForRecipientAt: null,
+      });
+
+      return {
+        ...chat.toObject(),
+        lastMessage,
+        unreadCount,
+      };
+    }),
+  );
+}
+
 exports.inbox = async (req, res, next) => {
   try {
-    const chats = await Chat.find({ participants: req.user._id })
-      .populate("participants", "username avatar isOnline lastSeen bio")
-      .sort({ updatedAt: -1 });
+    const chats = await buildConversationSidebar(req.user._id);
 
-    const inbox = await Promise.all(
-      chats.map(async (chat) => {
-        const lastMessage = await Message.findOne({ chat: chat._id })
-          .sort({ createdAt: -1 })
-          .lean();
-        return { ...chat.toObject(), lastMessage };
-      }),
-    );
-
-    res.render("chat/inbox", { title: "Inbox", chats: inbox });
+    res.render("chat/inbox", { title: "Inbox", chats });
   } catch (error) {
     next(error);
   }
@@ -66,6 +87,7 @@ exports.privateChat = async (req, res, next) => {
     }
 
     const chat = await getOrCreateChat(req.user._id, otherUser._id);
+    const recentChats = await buildConversationSidebar(req.user._id);
 
     const messages = await Message.find({
       chat: chat._id,
@@ -84,6 +106,7 @@ exports.privateChat = async (req, res, next) => {
       chat,
       otherUser,
       messages,
+      recentChats,
     });
   } catch (error) {
     next(error);
@@ -122,7 +145,14 @@ exports.sendPrivateMessage = async (req, res, next) => {
     }
 
     const chat = await getOrCreateChat(req.user._id, otherUser._id);
-    chat.lastMessage = req.body.content;
+    const content = String(req.body.content || "").trim();
+    const attachment = getFirstUpload(req, [
+      "attachmentImage",
+      "attachmentFile",
+    ]);
+    const attachmentLabel = attachment ? getUploadDescription(attachment) : "";
+
+    chat.lastMessage = content || attachmentLabel;
     chat.lastMessageAt = new Date();
     await chat.save();
 
@@ -130,9 +160,10 @@ exports.sendPrivateMessage = async (req, res, next) => {
       chat: chat._id,
       sender: req.user._id,
       recipient: otherUser._id,
-      content: req.body.content,
+      content,
       deliveredAt: new Date(),
       status: otherUser.isOnline ? "delivered" : "sent",
+      ...(attachment ? buildUploadMetadata(attachment, req.user._id) : {}),
     });
 
     const populatedMessage = await Message.findById(message._id).populate(

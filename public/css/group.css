@@ -1,11 +1,48 @@
 .group-card {
   display: grid;
-  gap: 1rem;
+  gap: 0.65rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .group-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
   object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  box-shadow: 0 8px 18px rgba(37, 36, 35, 0.08);
+}
+
+.group-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top right,
+    rgba(91, 95, 199, 0.06),
+    transparent 36%
+  );
+  pointer-events: none;
+}
+
+.group-card > * {
+  position: relative;
+}
+
+.member-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.member-chip .chat-avatar {
+  flex: 0 0 auto;
+}
+
+.group-card .surface-card,
+.group-card .list-item,
+.group-card .message-bubble {
+  background: var(--surface);
 }

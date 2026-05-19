@@ -7,6 +7,7 @@
   window.chatContext = window.chatContext || null;
 </script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/message-renderer.js"></script>
 <script src="/js/socket-client.js"></script>
 <script src="/js/chat.js"></script>
 <script src="/js/search.js"></script>
@@ -26,6 +27,28 @@
 
   const toggleButton = document.querySelector("[data-notification-toggle]");
   const dropdown = document.querySelector("[data-notification-dropdown]");
+  const sidebarToggle = document.querySelector("[data-sidebar-toggle]");
+  const sidebarBackdrop = document.querySelector("[data-sidebar-backdrop]");
+
+  function closeSidebar() {
+    document.body.classList.remove("sidebar-open");
+  }
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener("click", () => {
+      document.body.classList.toggle("sidebar-open");
+    });
+  }
+
+  if (sidebarBackdrop) {
+    sidebarBackdrop.addEventListener("click", closeSidebar);
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeSidebar();
+    }
+  });
 
   if (toggleButton && dropdown) {
     toggleButton.addEventListener("click", () =>

@@ -9,7 +9,16 @@ exports.list = async (req, res, next) => {
     const notifications = await Notification.find({ user: req.user._id }).sort({
       createdAt: -1,
     });
-    res.render("user/requests", { title: "Notifications", notifications });
+    // Render the requests page but ensure expected variables exist so the
+    // shared template doesn't throw if rendered directly from /notifications.
+    res.render("user/requests", {
+      title: "Notifications",
+      notifications,
+      incomingRequests: [],
+      outgoingRequests: [],
+      friends: [],
+      blockedUsers: [],
+    });
   } catch (error) {
     next(error);
   }

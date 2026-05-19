@@ -10,7 +10,17 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    content: { type: String, required: true, trim: true },
+    content: { type: String, default: "", trim: true },
+    fileUrl: { type: String, default: null },
+    publicId: { type: String, default: null },
+    fileType: { type: String, default: null },
+    originalName: { type: String, default: null },
+    uploadedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    uploadedAt: { type: Date, default: null },
     status: {
       type: String,
       enum: ["sent", "delivered", "seen"],

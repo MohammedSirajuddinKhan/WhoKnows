@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/chat.css">
   <link rel="stylesheet" href="/css/group.css">
+   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body class="app-page">
   <%- include('../partials/navbar') %>
@@ -14,71 +15,125 @@
     <%- include('../partials/sidebar') %>
     <section class="content-panel chat-panel">
       <header class="chat-header">
-        <div>
-          <p class="eyebrow">Group chat</p>
-          <h1><%= group.name %></h1>
-          <p><%= group.description || 'Telegram-inspired group conversation' %></p>
-          <p class="typing-status" data-typing-status></p>
+        <div class="chat-header__profile">
+          <div class="chat-avatar chat-avatar--lg chat-avatar--group">#</div>
+          <div>
+            <p class="eyebrow">Group chat</p>
+            <h1><%= group.name %></h1>
+            <p class="chat-subtitle"><%= group.description || 'Telegram-inspired group conversation' %></p>
+            <p class="typing-status" data-typing-status></p>
+          </div>
         </div>
-        <div class="inline-actions">
+        <div class="chat-header__actions">
+          <span class="status-pill"><%= group.members.length %> members</span>
           <form action="/groups/<%= group._id %>/leave" method="POST" class="inline-form">
             <button class="secondary-button" type="submit">Leave group</button>
           </form>
         </div>
       </header>
 
-      <% if (isAdmin) { %>
+      <div class="workspace-grid workspace-grid--group">
+        <% if (isAdmin) { %>
+          <section class="surface-card">
+            <div class="surface-card__head">
+              <h2>Invite members</h2>
+            </div>
+            <form class="form-stack" action="/groups/<%= group._id %>/invite" method="POST">
+              <label>
+                Usernames or IDs, comma separated
+                <input type="text" name="userIdentifiers" placeholder="bob, alice, 64f...">
+              </label>
+              <button class="primary-button" type="submit">Send invite</button>
+            </form>
+          </section>
+        <% } %>
+
         <section class="surface-card">
           <div class="surface-card__head">
-            <h2>Invite members</h2>
+            <h2>Members</h2>
           </div>
-          <form class="form-stack" action="/groups/<%= group._id %>/invite" method="POST">
-            <label>
-              Usernames or IDs, comma separated
-              <input type="text" name="userIdentifiers" placeholder="bob, alice, 64f...">
-            </label>
-            <button class="primary-button" type="submit">Send invite</button>
-          </form>
-        </section>
-      <% } %>
-
-      <section class="surface-card">
-        <div class="surface-card__head">
-          <h2>Members</h2>
-        </div>
-        <div class="stack-list">
-          <% group.members.forEach(function(member) { %>
-            <article class="list-item">
-              <div>
-                <strong>@<%= member.username %></strong>
-                <% if (String(group.creator) === String(member._id)) { %>
-                  <span class="muted-text">Creator</span>
+          <div class="stack-list">
+            <% group.members.forEach(function(member) { %>
+              <article class="list-item">
+                <div class="member-chip">
+                  <img class="chat-avatar" src="<%= member.avatar %>" alt="<%= member.username %> avatar">
+                  <div>
+                    <strong>@<%= member.username %></strong>
+                    <% if (String(group.creator) === String(member._id)) { %>
+                      <p class="muted-text">Creator</p>
+                    <% } else if (group.admins.some((admin) => String(admin._id || admin) === String(member._id))) { %>
+                      <p class="muted-text">Admin</p>
+                    <% } %>
+                  </div>
+                </div>
+                <% if (isAdmin && String(member._id) !== String(currentUser._id)) { %>
+                  <form action="/groups/<%= group._id %>/members/<%= member._id %>/remove" method="POST" class="inline-form">
+                    <button class="secondary-button" type="submit">Remove</button>
+                  </form>
                 <% } %>
-              </div>
-              <% if (isAdmin && String(member._id) !== String(currentUser._id)) { %>
-                <form action="/groups/<%= group._id %>/members/<%= member._id %>/remove" method="POST" class="inline-form">
-                  <button class="secondary-button" type="submit">Remove</button>
-                </form>
-              <% } %>
-            </article>
-          <% }); %>
-        </div>
-      </section>
+              </article>
+            <% }); %>
+          </div>
+        </section>
+      </div>
 
       <section class="messages-panel" data-chat-room data-group-id="<%= group._id %>">
         <div class="message-stream" data-message-stream>
-          <% messages.forEach(function(message) { %>
-            <article class="message-bubble <%= String(message.sender._id) === String(currentUser._id) ? 'is-me' : 'is-them' %>">
-              <p><strong>@<%= message.sender.username %>:</strong> <%= message.content %></p>
-              <small><%= formatDate(message.createdAt) %></small>
-            </article>
-          <% }); %>
+          <% if (messages.length) { %>
+            <% messages.forEach(function(message) { %>
+              <article class="message-bubble <%= String(message.sender._id) === String(currentUser._id) ? 'is-me' : 'is-them' %>">
+                <p><strong>@<%= message.sender.username %>:</strong> <%= message.content %></p>
+                <% if (message.fileUrl) { %>
+                  <% const isImage = message.fileType && String(message.fileType).startsWith('image/'); %>
+                  <% const fileLabel = message.originalName || 'Attachment'; %>
+                  <% if (isImage) { %>
+                    <a class="attachment-card attachment-card--image" href="<%= message.fileUrl %>" target="_blank" rel="noreferrer">
+                      <img class="attachment-card__image" src="<%= message.fileUrl %>" alt="<%= fileLabel %>">
+                      <div class="attachment-card__meta">
+                        <strong><%= fileLabel %></strong>
+                        <small><%= message.fileType || 'Image attachment' %></small>
+                      </div>
+                    </a>
+                  <% } else { %>
+                    <a class="attachment-card attachment-card--file" href="<%= message.fileUrl %>" target="_blank" rel="noreferrer" download>
+                      <div class="attachment-card__icon"><%= fileLabel.split('.').pop().slice(0, 4).toUpperCase() %></div>
+                      <div class="attachment-card__meta">
+                        <strong><%= fileLabel %></strong>
+                        <small><%= message.fileType || 'File attachment' %></small>
+                      </div>
+                    </a>
+                  <% } %>
+                <% } %>
+                <div class="message-meta"><small><%= formatDate(message.uploadedAt || message.createdAt) %></small></div>
+              </article>
+            <% }); %>
+          <% } else { %>
+            <div class="empty-state empty-state--compact">
+              <div class="empty-state__icon">◌</div>
+              <h2>No messages yet</h2>
+              <p>Be the first to say something in <%= group.name %>.</p>
+            </div>
+          <% } %>
         </div>
 
-        <form class="chat-compose" data-group-chat-form action="/groups/<%= group._id %>/messages" method="POST">
-          <input type="text" name="content" placeholder="Write a group message..." autocomplete="off" required>
-          <button class="primary-button" type="submit">Send</button>
-        </form>
+        <div class="composer-shell">
+          <div class="attachment-preview" data-attachment-preview hidden></div>
+          <div class="upload-progress" data-upload-progress hidden>
+            <div class="upload-progress__track"><span class="upload-progress__bar" data-upload-progress-bar></span></div>
+            <small data-upload-progress-label>Uploading...</small>
+            <button class="secondary-button upload-progress__cancel" type="button" data-upload-cancel>Cancel</button>
+          </div>
+          <div class="emoji-popover" data-emoji-picker hidden></div>
+          <form class="chat-compose" data-group-chat-form action="/groups/<%= group._id %>/messages" method="POST" enctype="multipart/form-data">
+            <button class="icon-button chat-utility" type="button" aria-label="Emoji picker" data-emoji-toggle>☺</button>
+            <button class="icon-button chat-utility" type="button" aria-label="Attach file" data-file-trigger="attachmentFile">＋</button>
+            <button class="icon-button chat-utility" type="button" aria-label="Attach image" data-file-trigger="attachmentImage">🖼</button>
+            <input class="visually-hidden" type="file" name="attachmentFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip" data-attachment-input="file">
+            <input class="visually-hidden" type="file" name="attachmentImage" accept="image/*" data-attachment-input="image">
+            <input type="text" name="content" placeholder="Write a group message..." autocomplete="off">
+            <button class="primary-button" type="submit">Send</button>
+          </form>
+        </div>
       </section>
     </section>
   </main>

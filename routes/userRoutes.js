@@ -12,7 +12,7 @@ router.get("/dashboard", userController.dashboard);
 router.get("/profile", userController.profile);
 router.post(
   "/profile",
-  upload.single("avatar"),
+  upload.profilePicture.single("avatar"),
   profileValidators,
   userController.updateProfile,
 );

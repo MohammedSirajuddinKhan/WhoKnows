@@ -1,5 +1,6 @@
 const express = require("express");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const upload = require("../middlewares/upload");
 const { groupValidators, messageValidators } = require("../utils/validators");
 const groupController = require("../controllers/groupController");
 
@@ -13,6 +14,10 @@ router.post("/create", groupValidators, groupController.createGroup);
 router.get("/:groupId", groupController.groupChat);
 router.post(
   "/:groupId/messages",
+  upload.chatAttachments.fields([
+    { name: "attachmentImage", maxCount: 1 },
+    { name: "attachmentFile", maxCount: 1 },
+  ]),
   messageValidators,
   groupController.sendGroupMessage,
 );

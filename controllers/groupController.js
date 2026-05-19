@@ -5,6 +5,11 @@ const Message = require("../models/Message");
 const User = require("../models/User");
 const { createNotification } = require("../services/notificationService");
 const { emitToUser } = require("../services/socketService");
+const {
+  buildUploadMetadata,
+  getFirstUpload,
+  getUploadDescription,
+} = require("../utils/uploadHelpers");
 
 function isGroupAdmin(group, userId) {
   return (
@@ -125,14 +130,22 @@ exports.sendGroupMessage = async (req, res, next) => {
       return res.redirect("/groups");
     }
 
+    const content = String(req.body.content || "").trim();
+    const attachment = getFirstUpload(req, [
+      "attachmentImage",
+      "attachmentFile",
+    ]);
+    const attachmentLabel = attachment ? getUploadDescription(attachment) : "";
+
     const message = await Message.create({
       group: group._id,
       sender: req.user._id,
-      content: req.body.content.trim(),
+      content,
       status: "sent",
+      ...(attachment ? buildUploadMetadata(attachment, req.user._id) : {}),
     });
 
-    group.lastMessage = req.body.content.trim();
+    group.lastMessage = content || attachmentLabel;
     group.lastMessageAt = new Date();
     await group.save();
 

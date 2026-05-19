@@ -1,4 +1,5 @@
 const { body } = require("express-validator");
+const { hasAttachedUpload } = require("./uploadHelpers");
 
 const registerValidators = [
   body("username")
@@ -36,10 +37,18 @@ const profileValidators = [
 ];
 
 const messageValidators = [
-  body("content")
-    .trim()
-    .isLength({ min: 1, max: 2000 })
-    .withMessage("Message content is required."),
+  body("content").custom((value, { req }) => {
+    const content = String(value || "").trim();
+    if (!content && !hasAttachedUpload(req)) {
+      throw new Error("Message content or an attachment is required.");
+    }
+
+    if (content.length > 2000) {
+      throw new Error("Message content must be 2000 characters or fewer.");
+    }
+
+    return true;
+  }),
 ];
 
 const groupValidators = [

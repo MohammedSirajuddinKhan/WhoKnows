@@ -1,6 +1,11 @@
 <header class="topbar">
+  <% if (currentUser) { %>
+    <button class="icon-button sidebar-toggle" type="button" data-sidebar-toggle aria-label="Open navigation">☰</button>
+  <% } %>
   <a class="brand" href="<%= currentUser ? '/users/dashboard' : '/auth/login' %>">
-    <span class="brand-mark">WK</span>
+    <span class="brand-mark">
+      <img src="/favicon.svg" alt="WhoKnows" class="brand-mark-img" width="36" height="36" />
+    </span>
     <span>
       <strong><%= appName %></strong>
       <small>private + anonymous</small>
@@ -13,7 +18,7 @@
         <input type="search" name="q" placeholder="Search users" value="<%= typeof query !== 'undefined' ? query : '' %>">
       </form>
     <% } else { %>
-      <span class="muted-pill">Anonymous messaging meets realtime chat</span>
+      <!-- <span class="muted-pill">Anonymous messaging meets realtime chat</span> -->
     <% } %>
   </div>
 
